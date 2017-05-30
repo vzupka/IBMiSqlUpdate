@@ -1,5 +1,5 @@
 # IBMiSqlUpdate
-IBM i SQL Update
+IBM i SQL Update Files
 
 Created by Vladimír Župka, 2017
 
