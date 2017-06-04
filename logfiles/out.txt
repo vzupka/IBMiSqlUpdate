@@ -1,0 +1,5 @@
+Statement:
+select rrn(CENY) as RRN
+ from QIWS/CENY
+ fetch first 1000 rows only
+getData: [SQL0204] CENY in QIWS type *FILE not found.
