@@ -259,11 +259,6 @@ public class SqlUpdate extends JFrame {
             if (!Files.exists(columnfilesPath)) {
                 Files.createDirectory(columnfilesPath);
             }
-            // If "workfiles" directory doesn't exist, create one
-            Path workfilesPath = Paths.get(System.getProperty("user.dir"), "workfiles");
-            if (!Files.exists(workfilesPath)) {
-                Files.createDirectory(workfilesPath);
-            }
 
         // Redirect System.err, System.out to log files err.txt, out.txt in directory "logfiles"
             errStream = Files.newOutputStream(errPath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
