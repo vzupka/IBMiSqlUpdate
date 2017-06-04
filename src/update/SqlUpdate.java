@@ -367,7 +367,6 @@ public class SqlUpdate extends JFrame {
 
     /**
      *
-     * @return
      */
     protected void createWindow() {
 
