@@ -88,7 +88,7 @@ public class SqlUpdate extends JFrame {
             winHeight;
     String nullMark, colSpaces, fontSize, decPattern, fetchFirst, orEnter, char_set, charSelect;
     String noTable, noCharset, printFontSize, maxFldLen;
-    String fileName;
+    String fileName = "";
     String libraryName;
     String charset;
 
@@ -539,8 +539,6 @@ public class SqlUpdate extends JFrame {
         librariesTf.setMinimumSize(new Dimension(120, 20));
         librariesTf.setForeground(Color.BLACK);
 
-        fileName = properties.getProperty(FILE);
-
         memberTf.setPreferredSize(new Dimension(120, 20));
         memberTf.setMinimumSize(new Dimension(120, 20));
         charsetTf.setText(properties.getProperty(CHARSET));
@@ -574,7 +572,7 @@ public class SqlUpdate extends JFrame {
         fileSelectButton.setPreferredSize(new Dimension(140, 20));
 
         // Initial value for combo box
-        fileSelectButton.addItem(fileName);
+        //fileSelectButton.addItem(fileName);
 
         // Select file name from a list in combo box - listener
         fileSelectButton.addItemListener(il -> {
@@ -591,10 +589,10 @@ public class SqlUpdate extends JFrame {
             memberTf.setForeground(Color.BLACK);
             if (!fileNames.isEmpty()) {
                 fileName = (String) source.getSelectedItem();
-//memberTf.setText("*FIRST");
             } else {
                 memberTf.setForeground(DIM_RED);
                 memberTf.setText(noTable);
+                fileName = "";
                 repaint();
                 return;
             }
@@ -603,6 +601,7 @@ public class SqlUpdate extends JFrame {
         // Libraries text field - listener
         librariesTf.addActionListener(al -> {
             checkLibrary();
+            saveData();
         });
 
         // Prepare charset selection combo box
@@ -762,8 +761,8 @@ public class SqlUpdate extends JFrame {
 
         // Button Save - listener
         saveButton.addActionListener(al -> {
+            checkLibrary();
             saveData();
-            setVisible(true);
         });
 
         // Button Run - listener
@@ -945,6 +944,7 @@ public class SqlUpdate extends JFrame {
                     for (int idx = 0; idx < fileNames.size(); idx++) {
                         fileSelectButton.addItem(fileNames.get(idx));
                     }
+                    fileSelectButton.setSelectedItem(fileName);
                     properties.setProperty(FILE, properties.getProperty("FILE"));
                     properties.setProperty(MEMBER, memberTf.getText().toUpperCase());
                 }
@@ -989,6 +989,7 @@ public class SqlUpdate extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             saveData();
+            checkLibrary();
             setVisible(true);
         }
     }
