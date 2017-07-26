@@ -41,7 +41,7 @@ public class L_TitleLabelBundle_en_US extends ListResourceBundle {
          { "WinWidth", "Window width" },
          { "WinHeight", "Window height" },
          { "NullMark", "Mark for null field values" },
-         { "FontSize", "Size of the font for printing data in print points" },
+         { "FontSize", "Size of the font for data displayed in fields" },
          { "MaxFldLen", "Limit for length of displayed data field" },
          { "PrintFontSize", "Size of the font for printing CLOB in print points" },
          { "FetchFirst", "Maximum number of records to display" },         

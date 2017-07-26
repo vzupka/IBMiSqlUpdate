@@ -92,29 +92,6 @@ public class SqlUpdate extends JFrame {
     String libraryName;
     String charset;
 
-    // Constants for properties
-    final String LANGUAGE = "LANGUAGE";
-    final String HOST = "HOST";
-    final String USER_NAME = "USER_NAME";
-    final String LIBRARY = "LIBRARY";
-    final String FILE = "FILE";
-    final String MEMBER = "MEMBER";
-    final String CHARSET = "CHARSET";
-    final String AUTO_WINDOW_SIZE = "AUTO_WINDOW_SIZE";
-    final String RESULT_WINDOW_WIDTH = "RESULT_WINDOW_WIDTH";
-    final String RESULT_WINDOW_HEIGHT = "RESULT_WINDOW_HEIGHT";
-    final String NULL_MARK = "NULL_MARK";
-    final String FONT_SIZE = "FONT_SIZE";
-    final String FETCH_FIRST = "FETCH_FIRST";
-    final String MAX_FIELD_LENGTH = "MAX_FIELD_LENGTH";
-    final String PAPER_SIZE = "PAPER_SIZE";
-    final String PRINT_FONT_SIZE = "PRINT_FONT_SIZE";
-    final String ORIENTATION = "ORIENTATION";
-    final String LEFT_MARGIN = "LEFT_MARGIN";
-    final String RIGHT_MARGIN = "RIGHT_MARGIN";
-    final String TOP_MARGIN = "TOP_MARGIN";
-    final String BOTTOM_MARGIN = "BOTTOM_MARGIN";
-
     Path errPath = Paths.get(System.getProperty("user.dir"), "logfiles", "err.txt");
     Path outPath = Paths.get(System.getProperty("user.dir"), "logfiles", "out.txt");
     OutputStream errStream;
@@ -260,7 +237,7 @@ public class SqlUpdate extends JFrame {
                 Files.createDirectory(columnfilesPath);
             }
 
-        // Redirect System.err, System.out to log files err.txt, out.txt in directory "logfiles"
+            // Redirect System.err, System.out to log files err.txt, out.txt in directory "logfiles"
             errStream = Files.newOutputStream(errPath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
             outStream = Files.newOutputStream(outPath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (Exception e) {
@@ -313,6 +290,7 @@ public class SqlUpdate extends JFrame {
             ioe.printStackTrace();
         }
 
+        libraryName = properties.getProperty("LIBRARY");
         fileName = properties.getProperty("FILE");
         memberTf.setText(properties.getProperty("MEMBER"));
 
@@ -518,7 +496,7 @@ public class SqlUpdate extends JFrame {
         // Get parameter properties
         // ------------------------
         // This parameter comes from radio buttons
-        language = properties.getProperty(LANGUAGE);
+        language = properties.getProperty("LANGUAGE");
         if (language.equals("en-US")) {
             englishButton.setSelected(true);
             czechButton.setSelected(false);
@@ -528,32 +506,32 @@ public class SqlUpdate extends JFrame {
         }
 
         // The following parameters are editable
-        hostTf.setText(properties.getProperty(HOST));
+        hostTf.setText(properties.getProperty("HOST"));
         hostTf.setPreferredSize(new Dimension(120, 20));
         hostTf.setMinimumSize(new Dimension(120, 20));
-        userNameTf.setText(properties.getProperty(USER_NAME));
+        userNameTf.setText(properties.getProperty("USER_NAME"));
         userNameTf.setPreferredSize(new Dimension(120, 20));
         userNameTf.setMinimumSize(new Dimension(120, 20));
-        librariesTf.setText(properties.getProperty(LIBRARY));
+        librariesTf.setText(properties.getProperty("LIBRARY"));
         librariesTf.setPreferredSize(new Dimension(120, 20));
         librariesTf.setMinimumSize(new Dimension(120, 20));
         librariesTf.setForeground(Color.BLACK);
 
         memberTf.setPreferredSize(new Dimension(120, 20));
         memberTf.setMinimumSize(new Dimension(120, 20));
-        charsetTf.setText(properties.getProperty(CHARSET));
+        charsetTf.setText(properties.getProperty("CHARSET"));
         charsetTf.setPreferredSize(new Dimension(160, 20));
         charsetTf.setMinimumSize(new Dimension(160, 20));
 
         // String "Y" or "N"
-        autoWindowSize = properties.getProperty(AUTO_WINDOW_SIZE);
+        autoWindowSize = properties.getProperty("AUTO_WINDOW_SIZE");
         //
-        windowWidthTf.setText(properties.getProperty(RESULT_WINDOW_WIDTH));
-        windowHeightTf.setText(properties.getProperty(RESULT_WINDOW_HEIGHT));
-        nullMarkTf.setText(properties.getProperty(NULL_MARK));
-        fontSizeTf.setText(properties.getProperty(FONT_SIZE));
-        fetchFirstTf.setText(properties.getProperty(FETCH_FIRST));
-        maxFldLengthTf.setText(properties.getProperty(MAX_FIELD_LENGTH));
+        windowWidthTf.setText(properties.getProperty("RESULT_WINDOW_WIDTH"));
+        windowHeightTf.setText(properties.getProperty("RESULT_WINDOW_HEIGHT"));
+        nullMarkTf.setText(properties.getProperty("NULL_MARK"));
+        fontSizeTf.setText(properties.getProperty("FONT_SIZE"));
+        fetchFirstTf.setText(properties.getProperty("FETCH_FIRST"));
+        maxFldLengthTf.setText(properties.getProperty("MAX_FIELD_LENGTH"));
 
         // Automatic size of the window with script results
         if (autoWindowSize.equals("Y")) {
@@ -566,42 +544,53 @@ public class SqlUpdate extends JFrame {
         // Prepare file selection combo box
         // --------------------------------
         // Create file selection combo box filled by file names
-        fileNames = new ArrayList<>(); // Empty list of file names
-
         fileSelectButton = new JComboBox();
         fileSelectButton.setPreferredSize(new Dimension(140, 20));
+        fileNames = new ArrayList<>(); // Empty list of file names
 
-        // Initial value for combo box
-        //fileSelectButton.addItem(fileName);
+        // Set initial value for combo box
+        // Check Library text field and set file names in the combo box if the library is correct
+        if (checkLibrary()) {
+            fileSelectButton.removeAllItems();
+            for (int idx = 0; idx < fileNames.size(); idx++) {
+                fileSelectButton.addItem(fileNames.get(idx));
+            }
+            fileSelectButton.setSelectedItem(fileName);
+            librariesTf.setForeground(Color.BLACK);
+        } else {
+            librariesTf.setForeground(DIM_RED); // dim red
+        }
 
         // Select file name from a list in combo box - listener
+        // ----------------------------------------------------
         fileSelectButton.addItemListener(il -> {
-
-            // Check if the file name list is empty
+            // If the file name list is empty - send message and return
             librariesTf.setForeground(Color.BLACK);
+            /*
             if (fileNames.isEmpty()) {
                 fileNames.add(noTable);
                 librariesTf.setForeground(DIM_RED); // dim red
                 return;
             }
-
+             */
+            // 
             JComboBox<String> source = (JComboBox<String>) il.getSource();
             memberTf.setForeground(Color.BLACK);
-            if (!fileNames.isEmpty()) {
+            //if (!fileNames.isEmpty()) {
+            if (fileSelectButton.getItemCount() > 0) {
                 fileName = (String) source.getSelectedItem();
             } else {
                 memberTf.setForeground(DIM_RED);
-                memberTf.setText(noTable);
-                fileName = "";
-                repaint();
-                return;
+                fileName = properties.getProperty("FILE");
+                //memberTf.setText("*FIRST");
             }
+            repaint();
         });
 
         // Libraries text field - listener
         librariesTf.addActionListener(al -> {
-            checkLibrary();
             saveData();
+            checkLibrary();
         });
 
         // Prepare charset selection combo box
@@ -761,8 +750,9 @@ public class SqlUpdate extends JFrame {
 
         // Button Save - listener
         saveButton.addActionListener(al -> {
-            checkLibrary();
             saveData();
+            System.out.println(fileName + " saveButton  " + properties.getProperty("FILE"));
+            checkLibrary();
         });
 
         // Button Run - listener
@@ -804,10 +794,6 @@ public class SqlUpdate extends JFrame {
         //pack();
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        // Check Library text field and set file names in the combo box
-        checkLibrary();
-        fileSelectButton.setSelectedItem(properties.getProperty("FILE"));
     }
 
     /**
@@ -837,20 +823,20 @@ public class SqlUpdate extends JFrame {
         }
 
         // Set properties with input values
-        properties.setProperty(LANGUAGE, language);
-        properties.setProperty(HOST, hostTf.getText());
-        properties.setProperty(USER_NAME, userNameTf.getText());
-        properties.setProperty(LIBRARY, librariesTf.getText().toUpperCase());
-        properties.setProperty(FILE, fileName);
-        properties.setProperty(MEMBER, memberTf.getText());
-        properties.setProperty(CHARSET, charsetTf.getText());
-        properties.setProperty(AUTO_WINDOW_SIZE, autoWindowSize);
-        properties.setProperty(RESULT_WINDOW_WIDTH, windowWidthString);
-        properties.setProperty(RESULT_WINDOW_HEIGHT, windowHeightString);
-        properties.setProperty(NULL_MARK, nullMarkTf.getText());
-        properties.setProperty(FONT_SIZE, fontSiz);
-        properties.setProperty(FETCH_FIRST, fetchFirstTf.getText());
-        properties.setProperty(MAX_FIELD_LENGTH, maxFldLengthTf.getText());
+        properties.setProperty("LANGUAGE", language);
+        properties.setProperty("HOST", hostTf.getText());
+        properties.setProperty("USER_NAME", userNameTf.getText());
+        properties.setProperty("LIBRARY", librariesTf.getText().toUpperCase());
+        properties.setProperty("FILE", fileName);
+        properties.setProperty("MEMBER", memberTf.getText());
+        properties.setProperty("CHARSET", charsetTf.getText());
+        properties.setProperty("AUTO_WINDOW_SIZE", autoWindowSize);
+        properties.setProperty("RESULT_WINDOW_WIDTH", windowWidthString);
+        properties.setProperty("RESULT_WINDOW_HEIGHT", windowHeightString);
+        properties.setProperty("NULL_MARK", nullMarkTf.getText());
+        properties.setProperty("FONT_SIZE", fontSiz);
+        properties.setProperty("FETCH_FIRST", fetchFirstTf.getText());
+        properties.setProperty("MAX_FIELD_LENGTH", maxFldLengthTf.getText());
 
         // Store properties to output file
         try {
@@ -862,6 +848,7 @@ public class SqlUpdate extends JFrame {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+        msgTextArea.append(parSaved + "\n   " + parPath + "\n");
         return true;
     }
 
@@ -895,7 +882,7 @@ public class SqlUpdate extends JFrame {
      * @return
      */
     protected boolean checkLibrary() {
-        String library = librariesTf.getText();
+        library = librariesTf.getText();
         librariesTf.setForeground(Color.BLACK);
         librariesTf.setBackground(Color.WHITE);
         try {
@@ -912,8 +899,11 @@ public class SqlUpdate extends JFrame {
                 }
                 rs.close();
                 if (libraries.indexOf(library.toUpperCase()) == -1 || library.isEmpty()) {
+                    // If the library name is not found in the list of libraries or is empty
+                    // report message and color the field.
                     msgTextArea.append(invalSchema + " - " + library + "\n");
                     librariesTf.setBackground(RED_LIGHTER); // dim red
+                    fileSelectButton.removeAllItems();
                     return false;
                 }
                 // Create list of database files (tables and views)
@@ -932,21 +922,22 @@ public class SqlUpdate extends JFrame {
                     fileNames.add(resSet.getString("FILE"));
                 }
                 resSet.close();
-                // Check if the file name list is empty
-                if (fileNames.isEmpty()) {
-                    /// fileNames.add(noTable);
-                    fileSelectButton.setSelectedItem(noTable);
-                    librariesTf.setBackground(RED_LIGHTER); // dim red
-                    return false;
+
+                // Fill combo box with the list of file names
+                fileSelectButton.removeAllItems();
+                for (int idx = 0; idx < fileNames.size(); idx++) {
+                    fileSelectButton.addItem(fileNames.get(idx));
+                }
+                // If the library names differ select the old file name from application parameters
+                if (library.equals(libraryName)) {
+                    fileSelectButton.setSelectedItem(properties.getProperty("FILE"));
                 } else {
-                    // If file name is NOT empty
-                    fileSelectButton.removeAllItems();
-                    for (int idx = 0; idx < fileNames.size(); idx++) {
-                        fileSelectButton.addItem(fileNames.get(idx));
-                    }
-                    fileSelectButton.setSelectedItem(fileName);
-                    properties.setProperty(FILE, properties.getProperty("FILE"));
-                    properties.setProperty(MEMBER, memberTf.getText().toUpperCase());
+                    // Else select the first name from the list                
+                    fileSelectButton.setSelectedItem(0);
+                    // Replace library name in the field
+                    librariesTf.setText(library);
+                    // Make library names equal
+                    libraryName = library;
                 }
             } else {
                 msgTextArea.append(noConnection + "\n");
@@ -960,7 +951,6 @@ public class SqlUpdate extends JFrame {
 
         librariesTf.setText(librariesTf.getText().toUpperCase());
         memberTf.setText(memberTf.getText().toUpperCase());
-        repaint();
         return true;
     }
 
@@ -989,6 +979,7 @@ public class SqlUpdate extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             saveData();
+            System.out.println(fileName + " SaveAction  " + properties.getProperty("FILE"));
             checkLibrary();
             setVisible(true);
         }

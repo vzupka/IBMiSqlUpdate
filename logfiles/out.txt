@@ -1,0 +1,11 @@
+QCUSTCDT saveButton  QCUSTCDT
+numOfCols: 12
+INSERT: insert into QIWS/QCUSTCDT ( CUSNUM, LSTNAM, INIT, STREET, CITY, STATE, ZIPCOD, CDTLMT, CHGCOD, BALDUE, CDTDUE) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+numOfCols: 12
+INSERT: insert into QIWS/QCUSTCDT ( CUSNUM, LSTNAM, INIT, STREET, CITY, STATE, ZIPCOD, CDTLMT, CHGCOD, BALDUE, CDTDUE) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+rowIndex: 13
+rrn: 14
+stmtText deleteRow: delete from QCUSTCDT where rrn(QCUSTCDT) = 14
+rowIndex: 12
+rrn: 13
+stmtText deleteRow: delete from QCUSTCDT where rrn(QCUSTCDT) = 13

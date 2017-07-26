@@ -41,7 +41,7 @@ public class L_TitleLabelBundle_cs_CZ extends ListResourceBundle {
          { "WinWidth", "Šířka okna" },
          { "WinHeight", "Výška okna" },
          { "NullMark", "Značka pro prázdné hodnoty polí" },
-         { "FontSize", "Výška písma pro zobrazení dat v počtu tiskových bodů" },
+         { "FontSize", "Výška písma pro zobrazení dat v polích" },
          { "MaxFldLen", "Limit délky zobrazeného datového pole" },
          { "PrintFontSize", "Výška písma pro tisk CLOB v počtu tiskových bodů" },
          { "FetchFirst", "Maximální počet zobrazených záznamů" },         

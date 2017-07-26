@@ -373,7 +373,7 @@ public class U_DataTable extends JFrame {
                 allNumOfCols++;
                 // Omit advanced column types
                 // - they are incapable to render in a cell
-                if (colType != java.sql.Types.CLOB && colType != java.sql.Types.BLOB
+                if (colType != java.sql.Types.CLOB && colType != java.sql.Types.NCLOB && colType != java.sql.Types.BLOB
                         && colType != java.sql.Types.ARRAY) // Add column name to the full list without advanced column types
                 // - they are incapable to render in a cell
                 {
@@ -381,7 +381,7 @@ public class U_DataTable extends JFrame {
                 }
 
                 // Advanced columns are added to special lists
-                if (colType == java.sql.Types.CLOB) {
+                if (colType == java.sql.Types.CLOB || colType == java.sql.Types.NCLOB) {
                     clobNumOfCols++;
                     clobColumnList += ", " + colName;
                     clobColNames.add(colName);
@@ -912,6 +912,8 @@ public class U_DataTable extends JFrame {
     ArrayList<JLabel> blobLabels;
     ArrayList<JButton> blobButtons;
 
+    String clobTypes[];
+
     GridBagLayout gridBagLayout = new GridBagLayout();
     GridBagConstraints gbc = new GridBagConstraints();
 
@@ -1042,14 +1044,17 @@ public class U_DataTable extends JFrame {
         // ----------------------------------------------------
         clobLabels = new ArrayList<>();
         clobButtons = new ArrayList<>();
+        clobTypes = new String[allNumOfCols];
 
         for (int idx = 0; idx < allNumOfCols; idx++) {
-            if (allColTypes.get(idx) == java.sql.Types.CLOB
-                    || allColTypes.get(idx) == java.sql.Types.NCLOB) {
-
+            if (allColTypes.get(idx) == java.sql.Types.CLOB || allColTypes.get(idx) == java.sql.Types.NCLOB) {
+                if (allColTypes.get(idx) == java.sql.Types.CLOB) {
+                    clobTypes[idx] = "CLOB";
+                } else if (allColTypes.get(idx) == java.sql.Types.NCLOB) {
+                    clobTypes[idx] = "NCLOB";
+                }
                 // Column name, type and size
-                JLabel label = new JLabel(allColNames.get(idx) + "  " + "CLOB" + " ("
-                        + allColSizes.get(idx) + ")");
+                JLabel label = new JLabel(allColNames.get(idx) + "  " + clobTypes[idx] + " (" + allColSizes.get(idx) + ")");
                 clobLabels.add(label);
 
                 // Column CLOB Button. Its text is the column name!
@@ -1113,13 +1118,14 @@ public class U_DataTable extends JFrame {
         // --------------------------------------------------
         if (!addNewRecord) {
             for (int idx = 0; idx < clobButtons.size(); idx++) {
+                int index = idx;
                 clobButtons.get(idx).addActionListener(ae -> {
                     // Column name is obtained from the ActionEvent ae (button text)
                     colName = ae.getActionCommand();
                     msg.setText(" ");
                     dataMsgPanel.removeAll();
                     dataMsgPanel.add(msg);
-                    updateClob();
+                    updateClob(index);
                 });
             }
         }
@@ -2017,13 +2023,15 @@ public class U_DataTable extends JFrame {
      * Update CLOB
      */
     @SuppressWarnings("UseSpecificCatch")
-    protected void updateClob() {
+    protected void updateClob(int col) {
         colLength = 0;
+        String clobType = "";
         // Get column capacity for column name just processed
         for (int in = 0; in < allColNames.size(); in++) {
             if (allColNames.get(in).contains(colName)) {
                 System.out.println("ColSize: " + allColSizes.get(in));
                 colCapacity = allColSizes.get(in);
+                clobType = clobTypes[in];
             }
         }
         try {
@@ -2043,11 +2051,17 @@ public class U_DataTable extends JFrame {
             // Execute the SELECT statement and obtain the ResulSet rs.
             rs = stmt.executeQuery(stmtText);
             rs.next();
-            clob = (com.ibm.as400.access.AS400JDBCClob) rs.getClob(colName);
+            
+            if (clobType.equals("CLOB")) {
+                clob = (com.ibm.as400.access.AS400JDBCClob) rs.getClob(colName);
+            }
+            else if (clobType.equals("NCLOB")) {
+                clob = (com.ibm.as400.access.AS400JDBCClobLocator) rs.getClob(colName);
+            }
             // Build UPDATE statement for current CLOB column (by colName)
             stmtText = "update " + library + "/" + file_member + "  SET " + colName;
             stmtText += " = ? where rrn(" + file_member + ") = " + rows[rowIndex][0];
-            System.out.println("UPDATE: \n" + stmtText);
+            //System.out.println("UPDATE: \n" + stmtText);
 
             // Prepare the UPDATE statement for the column
             pstmt = conn.prepareStatement(stmtText);

@@ -17,7 +17,6 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -282,8 +281,7 @@ public class U_BlobUpdate extends JDialog {
       imageLabel = renderImage();
       msg.setText(colLengthIs + this.blobLength);
       msg.setForeground(DIM_BLUE); // Dim blue
-      // If the contents cannot be rendered (dimensions are not positive
-      // numbers)
+      // If the contents cannot be rendered (dimensions are not positive numbers)
       if (imageLabel == null) {
          // Display a negative message - not rendered
          imageLabel = new JLabel();
