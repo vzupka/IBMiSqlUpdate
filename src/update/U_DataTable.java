@@ -150,6 +150,8 @@ public class U_DataTable extends JFrame {
     String[] colNames; // result set column names
     String[] colTypes; // result set column types
     int[] colSizes; // result set max. sizes of columns (number of characters)
+    String[] colPrecisions; // number of digits
+    String[] colScales; // number of decimal positions
     int colCapacity; // column capacity = size of CLOB or BLOB
 
     // Graphical table attributes
@@ -970,7 +972,11 @@ public class U_DataTable extends JFrame {
         textFields = new JTextField[numOfCols];
         for (int idx = 0; idx < numOfCols; idx++) {
             // Column name, type and size
-            fldLabels[idx] = new JLabel(colNames[idx] + "  " + colTypes[idx] + " (" + colSizes[idx] + ")");
+            if (colTypes[idx].equals("NUMERIC") || colTypes[idx].equals("DECIMAL")) {
+                fldLabels[idx] = new JLabel(colNames[idx] + "  " + colTypes[idx] + " (" + colPrecisions[idx] + ", " + colScales[idx] + ")");
+            } else {
+                fldLabels[idx] = new JLabel(colNames[idx] + "  " + colTypes[idx] + " (" + colSizes[idx] + ")");
+            }
             // Empty text field
             textFields[idx] = new JTextField("");
         }
@@ -996,8 +1002,7 @@ public class U_DataTable extends JFrame {
         //dataFieldFactor = (int) (defaultFont.getSize());
         for (int idx = 1; idx < numOfCols; idx++) {
             int txtFieldLength = colSizes[idx] * dataFieldFactor;
-            // Binary and variable binary columns will have twice as many
-            // characters (hex)
+            // Binary and variable binary columns will have twice as many characters (hex)
             if (colTypes[idx].equals("BINARY") || colTypes[idx].equals("VARBINARY")) {
                 txtFieldLength *= 2;
             }
@@ -1361,6 +1366,8 @@ public class U_DataTable extends JFrame {
             numOfCols = rsmd.getColumnCount(); // number of columns in result set
             colNames = new String[numOfCols];
             colSizes = new int[numOfCols];
+            colPrecisions = new String[numOfCols];
+            colScales = new String[numOfCols];
             colTypes = new String[numOfCols];
             // Omit column 0 with RRN???
             listWidth = 0;
@@ -1371,6 +1378,11 @@ public class U_DataTable extends JFrame {
                 int colSize = colSizes[col];
                 if (colTypes[col].equals("BINARY") || colTypes[col].equals("VARBINARY")) {
                     colSize *= 2;
+                } else if (colTypes[col].equals("NUMERIC") || colTypes[col].equals("DECIMAL")) {
+                    System.out.println("Precision: " + rs.getMetaData().getPrecision(col + 1));
+                    System.out.println("Scale    : " + rsmd.getScale(col + 1));
+                    colPrecisions[col] = String.valueOf(rs.getMetaData().getPrecision(col + 1));
+                    colScales[col] = String.valueOf(rs.getMetaData().getScale(col + 1));
                 }
                 double maxFieldWidth = cellFieldFactor * Math.max(colSize, colNames[col].length());
                 if (maxFieldWidth > maxFldWidth) {
@@ -1488,7 +1500,7 @@ public class U_DataTable extends JFrame {
         jTable.getTableHeader().setFont(new Font("Monospaced", Font.ITALIC, fontSize));
         // header height
         jTable.getTableHeader().setPreferredSize(new Dimension(0, 26));
-        // no reordering of headers and coluns
+        // no reordering of headers and columns
         jTable.getTableHeader().setReorderingAllowed(false);
 
         // Column model for column rendering and editing
@@ -2051,11 +2063,10 @@ public class U_DataTable extends JFrame {
             // Execute the SELECT statement and obtain the ResulSet rs.
             rs = stmt.executeQuery(stmtText);
             rs.next();
-            
+
             if (clobType.equals("CLOB")) {
                 clob = (com.ibm.as400.access.AS400JDBCClob) rs.getClob(colName);
-            }
-            else if (clobType.equals("NCLOB")) {
+            } else if (clobType.equals("NCLOB")) {
                 clob = (com.ibm.as400.access.AS400JDBCClobLocator) rs.getClob(colName);
             }
             // Build UPDATE statement for current CLOB column (by colName)
