@@ -1243,8 +1243,7 @@ public class U_DataTable extends JFrame {
     }
 
     /**
-     * Evaluate modifications of the SELECT statement: WHERE condition and ORDER
-     * BY ordering
+     * Evaluate modifications of the SELECT statement: WHERE condition and ORDER BY ordering.
      */
     protected void evalModifications() {
         condition = textAreaWhere.getText();
@@ -1264,8 +1263,7 @@ public class U_DataTable extends JFrame {
     }
 
     /**
-     * Refresh the list of rows in the table according to WHERE and ORDER BY
-     * modifications (if applicable)
+     * Refresh the list of rows in the table according to WHERE and ORDER BY modifications (if applicable).
      */
     protected void refreshTableList() {
         message.setText("");

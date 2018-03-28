@@ -16,6 +16,10 @@ Programs are written in Java language and require version Java SE 8 or higher. T
 
 The application is launched by double click on the shortcut or the original of the file IBMiSqlUpdate.jar.
 
+Version 01.01
+
+- Source documentation in Pages added to "documents" directory.
+
 - - - - - - - - - - 
 
 Tento projekt se neinstaluje, je okamžitě k použití jako Java aplikace v adresáři projektu. Aplikace vyžaduje instalaci Javy SE 8 v PC.
@@ -28,3 +32,8 @@ Aplikace slouží k pořizování a údržbě dat v databázových souborech. Pr
 Programy aplikace jsou napsány v jazyku Java a vyžadují verzi Java SE 8 nebo vyšší. Spolupracují s programy soustavy IBM i Toolbox for Java (nebo JTOpen). Programy byly vytvořeny v systému OS X 10.9 (Mavericks). Byly testovány postupně v systémech OS X 10.9. (Mavericks), OS X 10.10. (Yosemite), OS X 10.11. (El Capitan) a Windows 7 se vzdáleným internetovým připojením k systému IBM i, verze 7.1.
 
 Aplikace se spouští poklepáním na soubor IBMiSqlUpdate.jar.
+
+Version 01.01
+
+- Zdroje dokumentace v Pages přidány do adresáře "documents".
+
