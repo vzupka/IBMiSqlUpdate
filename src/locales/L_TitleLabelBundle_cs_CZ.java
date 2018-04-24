@@ -52,9 +52,9 @@ public class L_TitleLabelBundle_cs_CZ extends ListResourceBundle {
 
          // U_ColumnJList
          { "TitleCol", "Určete seznam polí k zobrazení" }, 
-         { "Prompt1Col", "Vyberte jména vlevo a stiskněte >>> k zařazení." }, 
-         { "Prompt2Col", "Vyberte jména vpravo a stiskněte XXX k odstranění." }, 
-         { "Prompt3Col", "Stiskněte Vymazat vše k odstranění všech jmen vpravo." }, 
+         { "Prompt1Col", "Vyberte jména vlevo a zařaďte je přetažením nebo stiskem tlačítka  \">>>\"." }, 
+         { "Prompt2Col", "Vyberte jména vpravo a odstraňte je stiskem tlačítka  \"X<<\"." }, 
+         { "Prompt3Col", "Odstraňte všechna jména vpravo stiskem tlačítka  \"Vymazat vše\"." }, 
 
          // SQL properties
          { "DecSeparator", "," }, 

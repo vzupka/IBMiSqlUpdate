@@ -3,6 +3,7 @@ package update;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.charset.UnsupportedCharsetException;
@@ -61,6 +63,9 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -90,6 +95,11 @@ public class U_DataTable extends JFrame {
     Path parPath = Paths.get(System.getProperty("user.dir"), "paramfiles", "Parameters.txt");
     String encoding = System.getProperty("file.encoding");
     final String PROP_COMMENT = "SqlScripts for IBM i, © Vladimír Župka 2015";
+
+    JMenuBar menuBar;
+    JMenu helpMenu;
+    JMenuItem helpMenuItemEN;
+    JMenuItem helpMenuItemCZ;
 
     String library;
     String db_file;
@@ -436,6 +446,59 @@ public class U_DataTable extends JFrame {
             System.out.println("write columns file: " + ioe.getLocalizedMessage());
             //ioe.printStackTrace();
         }
+
+        menuBar = new JMenuBar();
+        helpMenu = new JMenu("Help");
+        helpMenuItemEN = new JMenuItem("Help English");
+        helpMenuItemCZ = new JMenuItem("Nápověda česky");
+
+        helpMenu.add(helpMenuItemEN);
+        helpMenu.add(helpMenuItemCZ);
+        menuBar.add(helpMenu);
+
+        setJMenuBar(menuBar); // In macOS on the main system menu bar above, in Windows on the window menu bar  
+
+        // Register HelpWindow menu item listener
+        helpMenuItemEN.addActionListener(ae -> {
+            String command = ae.getActionCommand();
+            if (command.equals("Help English")) {
+                if (Desktop.isDesktopSupported()) {
+                    String uri = Paths
+                            .get(System.getProperty("user.dir"), "helpfiles", "IBMiSqlUpdateUserDocEn.pdf").toString();
+                    // Replace backslashes by forward slashes in Windows
+                    uri = uri.replace('\\', '/');
+                    uri = uri.replace(" ", "%20");
+                    try {
+                        // Invoke the standard browser in the operating system
+                        Desktop.getDesktop().browse(new URI("file://" + uri));
+                    } catch (Exception exc) {
+                        exc.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        // Register HelpWindow menu item listener
+        helpMenuItemCZ.addActionListener(ae -> {
+            String command = ae.getActionCommand();
+            if (command.equals("Nápověda česky")) {
+                if (Desktop.isDesktopSupported()) {
+                    String uri = Paths
+                            .get(System.getProperty("user.dir"), "helpfiles", "IBMiSqlUpdateUserDocCz.pdf").toString();
+                    // Replace backslashes by forward slashes in Windows
+                    uri = uri.replace('\\', '/');
+                    uri = uri.replace(" ", "%20");
+                    try {
+                        // Invoke the standard browser in the operating system
+                        Desktop.getDesktop().browse(new URI("file://" + uri));
+                    } catch (Exception exc) {
+                        exc.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        // End of constructor
     }
 
     /**
@@ -1377,8 +1440,8 @@ public class U_DataTable extends JFrame {
                 if (colTypes[col].equals("BINARY") || colTypes[col].equals("VARBINARY")) {
                     colSize *= 2;
                 } else if (colTypes[col].equals("NUMERIC") || colTypes[col].equals("DECIMAL")) {
-                    System.out.println("Precision: " + rs.getMetaData().getPrecision(col + 1));
-                    System.out.println("Scale    : " + rsmd.getScale(col + 1));
+                    //System.out.println("Precision: " + rs.getMetaData().getPrecision(col + 1));
+                    //System.out.println("Scale    : " + rsmd.getScale(col + 1));
                     colPrecisions[col] = String.valueOf(rs.getMetaData().getPrecision(col + 1));
                     colScales[col] = String.valueOf(rs.getMetaData().getScale(col + 1));
                 }
@@ -1721,7 +1784,7 @@ public class U_DataTable extends JFrame {
         // then there are no normal columns.
         // RRN field (index 0) is omitted from INSERT!
         stmtText = "insert into " + library + "/" + file_member + " (";
-        System.out.println("numOfCols: " + numOfCols);
+        //System.out.println("numOfCols: " + numOfCols);
 
         // Normal columns
         stmtText += normalColumnList.substring(normalColumnList.indexOf(", ") + 1);
@@ -1756,7 +1819,7 @@ public class U_DataTable extends JFrame {
         }
 
         stmtText += ")";
-        System.out.println("INSERT: " + stmtText);
+        //System.out.println("INSERT: " + stmtText);
         return performPreparedStatement(stmtText);
     }
 
@@ -1987,7 +2050,7 @@ public class U_DataTable extends JFrame {
             } catch (ClassNotFoundException cnfe) {
                 cnfe.printStackTrace();
             }
-            System.out.println("message: " + message.getText());
+            //System.out.println("message: " + message.getText());
             message.setForeground(DIM_RED); // red
             // Put message in data message panel
             dataMsgPanel.add(message);
@@ -2039,7 +2102,7 @@ public class U_DataTable extends JFrame {
         // Get column capacity for column name just processed
         for (int in = 0; in < allColNames.size(); in++) {
             if (allColNames.get(in).contains(colName)) {
-                System.out.println("ColSize: " + allColSizes.get(in));
+                //System.out.println("ColSize: " + allColSizes.get(in));
                 colCapacity = allColSizes.get(in);
                 clobType = clobTypes[in];
             }
@@ -2056,7 +2119,7 @@ public class U_DataTable extends JFrame {
 
             // Statement is scrollable, updatable
             stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            System.out.println("SELECT: \n" + stmtText);
+            //System.out.println("SELECT: \n" + stmtText);
 
             // Execute the SELECT statement and obtain the ResulSet rs.
             rs = stmt.executeQuery(stmtText);

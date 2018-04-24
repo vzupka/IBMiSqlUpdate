@@ -38,7 +38,7 @@ public class L_ButtonBundle_en_US extends ListResourceBundle{
 
        // U_ColumnJList
        {"CopyCol", ">>>"},       
-       {"DeleteCol", "XXX"},       
+       {"DeleteCol", "X<<"},       
        {"ClearAll", "Clear all"},       
        {"SaveExit", "Save + return"},       
 

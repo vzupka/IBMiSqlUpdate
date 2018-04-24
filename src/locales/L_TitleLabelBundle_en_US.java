@@ -52,9 +52,9 @@ public class L_TitleLabelBundle_en_US extends ListResourceBundle {
 
          // U_ColumnJList
          { "TitleCol", "Define list of fields to display" }, 
-         { "Prompt1Col", "Select names on the left and press >>> to include." }, 
-         { "Prompt2Col", "Select names on the right and press XXX to remove." }, 
-         { "Prompt3Col", "Press Clear all to remove all names on the right." }, 
+         { "Prompt1Col", "Select names on the left and drag them to the right or press button  \">>>\"." }, 
+         { "Prompt2Col", "Remove selected names on the right by pressing button  \"X<<\"." }, 
+         { "Prompt3Col", "Remove all names on the right by pressing button  \"Clear all\"." }, 
 
          // SQL properties
          { "DecSeparator", "." },
