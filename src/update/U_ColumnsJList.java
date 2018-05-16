@@ -33,7 +33,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
 import javax.swing.TransferHandler;
 
 /**
@@ -179,7 +178,7 @@ public class U_ColumnsJList extends JDialog {
         listRight = new JList(listRightModel);
         listRight.setDragEnabled(true);
         listRight.setDropMode(DropMode.INSERT);
-        listRight.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+//        listRight.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION); // This is default, so unnecessary.
 
         scrollPaneLeft.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         //scrollPaneLeft.setMaximumSize(new Dimension(scrollPaneWidth, scrollPaneHeight));

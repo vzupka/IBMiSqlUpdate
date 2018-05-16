@@ -17,8 +17,8 @@ echo cd $script_dir
 echo -------------------------------------------------------------------
 echo The following command creates the Jar file in the current directory
 
-echo jar cvfm  IBMiSqlUpdate.jar  manifesIBMiSqlUpdate.txt  -C build/classes  update/SqlUpdate.class  -C build/classes  update -C build/classes locales
-jar cvfm  IBMiSqlUpdate.jar  manifestIBMiSqlUpdate.txt  -C build/classes  update/SqlUpdate.class  -C build/classes  update -C build/classes locales
+echo jar cvfm  IBMiSqlUpdate.jar  manifesIBMiSqlUpdate.txt  -C build/classes  update/U_MainWindow_Parameters.class  -C build/classes  update -C build/classes locales
+jar cvfm  IBMiSqlUpdate.jar  manifestIBMiSqlUpdate.txt  -C build/classes  update/U_MainWindow_Parameters.class  -C build/classes  update -C build/classes locales
 
 echo -------------------------------------------
 echo The following command executes the Jar file

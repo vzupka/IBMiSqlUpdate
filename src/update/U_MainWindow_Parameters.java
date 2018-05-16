@@ -66,7 +66,7 @@ import javax.swing.text.Position;
  * @author Vladimír Župka 2017
  *
  */
-public class SqlUpdate extends JFrame {
+public class U_MainWindow_Parameters extends JFrame {
 
     final Color RED_LIGHTER = Color.getHSBColor(0.95f, 0.07f, 1); // red level 2
 
@@ -224,7 +224,7 @@ public class SqlUpdate extends JFrame {
     /**
      * Constructor creates the window with application parameters
      */
-    SqlUpdate() {
+    U_MainWindow_Parameters() {
         // Get or set application properties
         // ---------------------------------        
         Properties sysProp = System.getProperties();
@@ -1076,7 +1076,7 @@ public class SqlUpdate extends JFrame {
      */
     public static void main(String... strings) {
         try {
-            SqlUpdate sqlUpdate = new SqlUpdate();
+            U_MainWindow_Parameters sqlUpdate = new U_MainWindow_Parameters();
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             sqlUpdate.createWindow();
         } catch (Exception exc) {
