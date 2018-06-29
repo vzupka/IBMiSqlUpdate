@@ -10,6 +10,9 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
@@ -175,8 +178,13 @@ public class U_BlobUpdate extends JDialog {
       } catch (IOException ioe) {
          ioe.printStackTrace();
       }
-
+      
+      // Create and register a window listener
+      WindowListener windowListener = new MainWindowAdapter();
+      this.addWindowListener(windowListener);
+      
       retValues = new U_BlobReturnedValues();
+      retValues.setMsg(msg);
    }
 
    /**
@@ -322,8 +330,7 @@ public class U_BlobUpdate extends JDialog {
       returnButton.addActionListener(a -> {
          // Save the updated BLOB object and blob length
          // and message label into U_BlobReturnedValues object "retValues"
-         // for the user (caller) of this class to get these values for further
-         // processing
+         // for the user (caller) of this class to get these values for further processing
          retValues.setBlob(this.blob);
          retValues.setLength(this.blobLength);
          // A special case when the blob was not changed.
@@ -357,9 +364,7 @@ public class U_BlobUpdate extends JDialog {
             msg.setText(colValueNull);
             // Save the updated BLOB object and blob length
             // and message label into U_BlobReturnedValues object "retValues"
-            // for the user (caller) of this class to get these values for
-            // further
-            // processing
+            // for the user (caller) of this class to get these values for further processing
             retValues.setBlob(this.blob);
             retValues.setLength(this.blobLength);
             retValues.setMsg(msg);
@@ -706,4 +711,26 @@ public class U_BlobUpdate extends JDialog {
          }
       }
    }
+   
+    /**
+     * Window adapter setting current coordinates of the window to properties.
+     */
+    class MainWindowAdapter extends WindowAdapter {
+
+        @Override
+        public void windowClosing(WindowEvent we) {
+         // Save the updated BLOB object and blob length
+         // and message label into U_BlobReturnedValues object "retValues"
+         // for the user (caller) of this class to get these values for further processing
+         retValues.setBlob(blob);
+         retValues.setLength(blobLength);
+         // A special case when the blob was not changed.
+         if (blobChanged)
+            retValues.setMsg(msg);
+         else
+            retValues.setMsg(new JLabel(blobNotChanged));
+         // Close the window 
+         dispose();
+        }
+    }
 }

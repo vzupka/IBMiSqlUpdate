@@ -2264,7 +2264,7 @@ public class U_DataTable extends JFrame {
             stmtText = "select " + colName + "\n from " + library.toUpperCase() + "/"
                     + file_member.toUpperCase();
             stmtText += " where rrn(" + file_member + ") = " + rows[rowIndex][0];
-            System.out.println("SELECT: \n" + stmtText);
+            // System.out.println("SELECT: \n" + stmtText);
 
             // Statement is scrollable, updatable
             stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -2280,7 +2280,7 @@ public class U_DataTable extends JFrame {
             // (by colName)
             stmtText = "update " + library + "/" + file_member + "  set " + colName;
             stmtText += " = ? where rrn(" + file_member + ") = " + rows[rowIndex][0];
-            System.out.println("UPDATE: \n" + stmtText);
+            //System.out.println("UPDATE: \n" + stmtText);
 
             // If blob reference is not null - content window is displayed
             if (blob != null) {
@@ -2291,7 +2291,6 @@ public class U_DataTable extends JFrame {
                 U_BlobUpdate blobUpdate = new U_BlobUpdate(this);
                 blobUpdate.createWindow(colName, blob, blobLength);
                 U_BlobReturnedValues retBlobValues = blobUpdate.getReturnedValues();
-
                 // Get returned values
                 blobReturned = retBlobValues.getBlob();
                 blobLength = retBlobValues.getLength();

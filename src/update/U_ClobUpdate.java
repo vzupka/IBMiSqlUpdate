@@ -441,9 +441,8 @@ public class U_ClobUpdate extends JDialog {
         returnButton.addActionListener(a -> {
             // Save the updated CLOB object, start position, work area length
             // and message label into U_ClobReturnedValues object "retValues"
-            // for the user (caller) of this class to get these values for further
-            // processing
-            retValues.setClob(this.clob);
+            // for the user (caller) of this class to get these values for further processing
+            retValues.setClob(clob);
             retValues.setStartPos(startPosition);
             retValues.setLength(workTextArea.getText().length());
             retValues.setMsg(msg);
@@ -1055,6 +1054,24 @@ public class U_ClobUpdate extends JDialog {
             // Paint contents of the page
             paint(g2);
             return PAGE_EXISTS;
+        }
+    }
+   
+    /**
+     * Window adapter setting current coordinates of the window to properties.
+     */
+    class MainWindowAdapter extends WindowAdapter {
+
+        @Override
+        public void windowClosing(WindowEvent we) {
+            // Save the updated CLOB object, start position, work area length
+            // and message label into U_ClobReturnedValues object "retValues"
+            // for the user (caller) of this class to get these values for further processing
+            retValues.setClob(clob);
+            retValues.setStartPos(startPosition);
+            retValues.setLength(workTextArea.getText().length());
+            retValues.setMsg(msg);
+            dispose();
         }
     }
 }
