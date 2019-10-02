@@ -71,7 +71,7 @@ public class U_MainWindow_Parameters extends JFrame {
     final Color RED_LIGHTER = Color.getHSBColor(0.95f, 0.07f, 1); // red level 2
 
     int windowWidth = 650;
-    int windowHeight = 950;
+    int windowHeight = 800;
 
     Connection conn;
     U_ConnectDB connectDB = new U_ConnectDB();
@@ -918,7 +918,7 @@ public class U_MainWindow_Parameters extends JFrame {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        msgTextArea.append(parSaved + "\n   " + parPath + "\n");
+        /// msgTextArea.append(parSaved + "\n   " + parPath + "\n");
         return true;
     }
 
@@ -1032,7 +1032,7 @@ public class U_MainWindow_Parameters extends JFrame {
      */
     protected String checkNumber(String charNumber) {
         try {
-            new Integer(charNumber);
+            Integer.getInteger(charNumber);
         } catch (NumberFormatException nfe) {
             charNumber = "0";
         }

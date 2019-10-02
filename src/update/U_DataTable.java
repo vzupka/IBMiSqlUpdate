@@ -9,6 +9,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 
 import java.io.BufferedReader;
@@ -17,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import static java.lang.Integer.parseInt;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.nio.charset.Charset;
@@ -257,16 +259,16 @@ public class U_DataTable extends JFrame {
             file_member = properties.getProperty("MEMBER"); // member name
             language = properties.getProperty("LANGUAGE"); // local language
             charCode = properties.getProperty("CHARSET");
-            windowHeight = new Integer(properties.getProperty("RESULT_WINDOW_HEIGHT"));
-            windowWidth = new Integer(properties.getProperty("RESULT_WINDOW_WIDTH"));
+            windowHeight = parseInt(properties.getProperty("RESULT_WINDOW_HEIGHT"));
+            windowWidth = parseInt(properties.getProperty("RESULT_WINDOW_WIDTH"));
             autoWindowSize = properties.getProperty("AUTO_WINDOW_SIZE");
             nullMark = properties.getProperty("NULL_MARK");
-            fontSize = new Integer(properties.getProperty("FONT_SIZE"));
+            fontSize = parseInt(properties.getProperty("FONT_SIZE"));
             // Factor to multiply cell width
             cellFieldFactor = fontSize * 0.75;
             // Max. number of rows in the result set
             fetchFirst = properties.getProperty("FETCH_FIRST");
-            maxFldWidth = new Integer(properties.getProperty("MAX_FIELD_LENGTH"));
+            maxFldWidth = parseInt(properties.getProperty("MAX_FIELD_LENGTH"));
 
             // The first member has the same name as the file
             if (file_member.toUpperCase().equals("*FIRST")) {
@@ -433,20 +435,21 @@ public class U_DataTable extends JFrame {
         // without columns of "advanced" types (CLOB, BLOB, ARRAY)
         actualColumnList = normalColumnList;
 
-        // Write the actual column list to the .col file for the database file (table)
         columnsPath = Paths.get(System.getProperty("user.dir"), "columnfiles", selectFileName
                 + ".col");
-        try {
-            ArrayList<String> colArr = new ArrayList<>();
-            colArr.add(actualColumnList);
-            // Write file with columns list
-            // Rewrite the existing file or create and write a new file.
-            Files.write(columnsPath, colArr, StandardCharsets.UTF_8);
-        } catch (IOException ioe) {
-            System.out.println("write columns file: " + ioe.getLocalizedMessage());
-            //ioe.printStackTrace();
+        if (!Files.exists(columnsPath)) {
+            // Write the actual column list to the .col file for the database file (table)
+            try {
+                ArrayList<String> colArr = new ArrayList<>();
+                colArr.add(actualColumnList);
+                // Write file with columns list
+                // Rewrite the existing file or create and write a new file.
+                Files.write(columnsPath, colArr, StandardCharsets.UTF_8);
+            } catch (IOException ioe) {
+                System.out.println("write columns file: " + ioe.getLocalizedMessage());
+                //ioe.printStackTrace();
+            }
         }
-
         menuBar = new JMenuBar();
         helpMenu = new JMenu("Help");
         helpMenuItemEN = new JMenuItem("Help English");
@@ -755,8 +758,6 @@ public class U_DataTable extends JFrame {
             addNewRecord = true;
             message.setText("");
             textAreaStmt.setText("");
-            msg.setText("");
-            dataMsgPanel.add(msg);
 
             if (rowIndexList != null) { // row index not empty
                 if (rowIndex >= 0) {
@@ -799,8 +800,6 @@ public class U_DataTable extends JFrame {
             addNewRecord = false;
             message.setText("");
             textAreaStmt.setText("");
-            msg.setText("");
-            dataMsgPanel.add(msg);
 
             if (rowIndexList != null) { // row index not empty
                 if (rowIndex >= 0) {
@@ -851,10 +850,16 @@ public class U_DataTable extends JFrame {
                     // Evaluate WHERE and ORDER BY modifications
                     evalModifications();
                     getData();
-                    refreshTableList();
-                    repaint();
-                    // Disable last row selection
-                    rowIndexList = null;
+
+                    // Select the row previously selected or the last one.
+                    if (numOfRows > 0) {
+                        if (rowIndex < numOfRows) {
+                            jTable.setRowSelectionInterval(rowIndex, rowIndex);
+                        } else {
+                            jTable.setRowSelectionInterval(numOfRows - 1, numOfRows - 1);
+                        }
+                    }
+                    buildListWindow(condition, ordering);
                 } else {
                     message.setText(noRowDel);
                     message.setForeground(DIM_RED); // Dim red
@@ -888,7 +893,8 @@ public class U_DataTable extends JFrame {
         // ---------------------------
         columnsButton.addActionListener(a -> {
             new U_ColumnsJList(normalColumnList, selectFileName);
-            refreshTableList();
+            jTable.setRowSelectionInterval(rowIndex, rowIndex); // Save the same selection
+            buildListWindow(this.condition, this.ordering);
         });
 
         // Finish the window building
@@ -949,6 +955,17 @@ public class U_DataTable extends JFrame {
             globalHeight = windowHeight;
         }
 
+        // Select the row previously selected or a nearest lower.
+        if (numOfRows > 0) {
+            if (rowIndex < numOfRows) {
+                jTable.setRowSelectionInterval(rowIndex, rowIndex);
+            } else {
+                jTable.setRowSelectionInterval(numOfRows - 1, numOfRows - 1);
+            }
+        }
+        // The selected row will be shown as the first row in the list window
+        jTable.scrollRectToVisible(new Rectangle(jTable.getCellRect(rowIndex, 0, true)));        
+
         // Make window visible
         setSize(globalWidth, globalHeight);
         setLocation(0, 10);
@@ -1002,7 +1019,7 @@ public class U_DataTable extends JFrame {
     protected void buildDataWindow() {
 
         colStartPos = 1;
-        colLength = new Integer(fetchFirst);
+        colLength = parseInt(fetchFirst);
 
         // Localized messages
         length = locMessages.getString("Length");
@@ -1284,6 +1301,7 @@ public class U_DataTable extends JFrame {
         saveAndReturnButton.addActionListener(a -> {
             if (saveData()) {
                 // Create the list window again
+                jTable.setRowSelectionInterval(rowIndex, rowIndex);
                 buildListWindow(this.condition, this.ordering);
             } // Error when inserting or updating data
             else {
@@ -1296,6 +1314,7 @@ public class U_DataTable extends JFrame {
         // --------------------------
         dataPanelReturnButton.addActionListener(a -> {
             listContentPane.removeAll();
+            jTable.setRowSelectionInterval(rowIndex, rowIndex);
             buildListWindow(this.condition, this.ordering);
         });
 
@@ -1355,10 +1374,6 @@ public class U_DataTable extends JFrame {
         listContentPane.removeAll();
 
         buildListWindow(condition, ordering);
-
-        // Disable row selection
-        rowIndexList = null;
-        rowIndex = -1;
     }
 
     /**
@@ -1376,12 +1391,13 @@ public class U_DataTable extends JFrame {
             columnList = items.get(0);
             columnArray = columnList.split(",");
             actualColumnList = "";
-            for (int idx = 0; idx < columnArray.length; idx++) {
+            for (int idx = 1; idx < columnArray.length; idx++) {
                 // 20 columns in a line, next columns in the next line
                 if (idx % 20 != 0) {
                     actualColumnList += "," + columnArray[idx];
                 } else {
                     actualColumnList += "\n";
+                    actualColumnList += "," + columnArray[idx];
                 }
             }
             // System.out.println("actualColumnList:"+actualColumnList);
@@ -1654,7 +1670,7 @@ public class U_DataTable extends JFrame {
                     if (rows[row][col].equals(nullMark)) {
                         pstmt.setNull(ONE, java.sql.Types.INTEGER);
                     } else {
-                        pstmt.setInt(ONE, new Integer(rows[row][col].toString()));
+                        pstmt.setInt(ONE, parseInt(rows[row][col].toString()));
                     }
                     break;
                 case "DATE":
@@ -1886,7 +1902,7 @@ public class U_DataTable extends JFrame {
                         if (textFields[col].getText().equals(nullMark)) {
                             pstmt.setNull(col, java.sql.Types.INTEGER);
                         } else {
-                            pstmt.setInt(col, new Integer(textFields[col].getText()));
+                            pstmt.setInt(col, parseInt(textFields[col].getText()));
                         }
                         break;
                     case "DATE":
@@ -2526,7 +2542,7 @@ public class U_DataTable extends JFrame {
             if (colTypes[col].equals("DECIMAL")) {
                 obj = new java.math.BigDecimal(tf.getText());
             } else if (colTypes[col].equals("INTEGER")) {
-                obj = new Integer(tf.getText());
+                obj = parseInt(tf.getText());
             } else if (colTypes[col].equals("DATE")) {
                 obj = Date.valueOf(tf.getText());
             } else if (colTypes[col].equals("TIME")) {

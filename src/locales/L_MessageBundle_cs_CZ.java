@@ -14,7 +14,7 @@ public class L_MessageBundle_cs_CZ extends ListResourceBundle {
 
    final private Object[][] contents = {
          // U_Main
-         { "CurDir", "Běžný adresář je: " },
+         { "CurDir", "   Běžný adresář je: " },
          { "NoConnection", "NENÍ SPOJENÍ S DATABÁZOVÝM SERVEREM!" },
          { "InvalSchema", "CHYBNÉ SCHEMA/TABULKA " },
          { "CorrectPar", "Opravte aplikační parametry nebo zkontrolujte soubor a jeho členy." },

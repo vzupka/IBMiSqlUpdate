@@ -14,7 +14,7 @@ public class L_MessageBundle_en_US extends ListResourceBundle {
 
    final private Object[][] contents = {
          // U_Main
-         { "CurDir", "Current directory is: " },
+         { "CurDir", "   Current directory is: " },
          { "NoConnection", "NO CONNECTION TO THE DATABASE SERVER!" },
          { "InvalSchema", "INVALID SCHEMA/TABLE " },
          { "CorrectPar", "Correct application parameters or the check the file and its members." },

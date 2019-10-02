@@ -1,0 +1,2 @@
+null
+Connection error: The application server rejected the connection. (Signon was canceled.)
